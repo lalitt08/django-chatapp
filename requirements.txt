@@ -1,6 +1,6 @@
 aioredis==2.0.1          # Latest stable version
 asgiref==3.4.1           # Compatible with Django 4.x
-attrs==23.1.0            # General-purpose library
+attrs==22.2.0            # General-purpose library
 autobahn==23.1.2         # WebSocket support
 certifi==2023.11.17      # SSL Certificates
 cffi==1.15.1             # Cryptography library
