@@ -27,4 +27,3 @@ six==1.16.0              # Python 2/3 compatibility
 tqdm==4.64.1             # Progress bar
 websockets==9.1       # WebSocket support
 djangorestframework
-djangorestframework-authtoken
