@@ -1,4 +1,4 @@
-aioredis==2.0.1          # Latest stable version
+aioredis         # Latest stable version
 asgiref==3.4.1           # Compatible with Django 4.x
 attrs==22.2.0            # General-purpose library
 autobahn==20.12.3         # WebSocket support
