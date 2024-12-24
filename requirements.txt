@@ -18,7 +18,7 @@ gunicorn==20.1.0         # WSGI HTTP server
 hiredis==2.0.0           # Redis support
 oauthlib==3.2.2          # OAuth 2.0 authentication
 psycopg2-binary==2.9.8   # PostgreSQL driver
-PyJWT==2.8.0             # JWT tokens
+PyJWT==2.4.0             # JWT tokens
 pytz==2023.3             # Timezone utilities
 redis==5.0.0             # Redis library
 requests==2.31.0         # HTTP requests
