@@ -41,6 +41,7 @@ SITE_ID = 1
 
 INSTALLED_APPS = [
     'rest_framework',
+    'rest_framework.authtoken',
     'dj_rest_auth',
     'fundooapp',
     'channels',
