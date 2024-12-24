@@ -4,7 +4,7 @@ attrs==22.2.0            # General-purpose library
 autobahn==20.12.3         # WebSocket support
 certifi==2023.11.17      # SSL Certificates
 cffi==1.15.1             # Cryptography library
-channels==4.0.0          # Updated for Django 4.x
+channels==3.0.4          # Updated for Django 4.x
 channels-redis==4.0.0    # Compatible with latest channels
 cryptography==41.0.3     # Security updates
 daphne==4.0.0            # ASGI server
