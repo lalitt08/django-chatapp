@@ -11,7 +11,7 @@ daphne==3.0.0            # ASGI server
 defusedxml==0.7.1        # XML security
 Django==3.2.10            # Long-term support version
 django-allauth==0.53.0   # Updated social authentication
-django-rest-auth==2.2.0  # Updated REST authentication
+dj-rest-auth==2.1.0  # Updated REST authentication
 djangorestframework==3.12.4  # API framework
 drf-extensions==0.7.0    # DRF extensions
 gunicorn==20.1.0         # WSGI HTTP server
