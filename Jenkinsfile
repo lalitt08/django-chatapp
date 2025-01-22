@@ -1,56 +1,57 @@
 pipeline {
     agent any
     environment {
-        BACKEND_USER = 'ubuntu'
-        BACKEND_SERVER = '10.0.3.92'
-        CHATAPP_DIR = '/Django_Chatapp' // This should be the root where 'venv' is located.
-        FUND_APP_DIR = '/Django_Chatapp/fundoo' // Directory where 'manage.py' is located.
-        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa'
+        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa' // Specify the SSH private key
     }
     stages {
+        stage('Declarative: Checkout SCM') {
+            steps {
+                echo 'Checking out the repository...'
+                checkout scm
+            }
+        }
         stage('Sync Files') {
             steps {
-                echo ">>> Starting file synchronization..."
-                sh "rsync -avz -e 'ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no' ${WORKSPACE}/ ${BACKEND_USER}@${BACKEND_SERVER}:${CHATAPP_DIR}"
+                echo '>>> Starting file synchronization...'
+                sh '''
+                    rsync -avz -e "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" \
+                    ${WORKSPACE}/ ubuntu@10.0.3.92:/Django_Chatapp
+                '''
             }
         }
         stage('Execute Remote Tasks') {
             steps {
-                echo ">>> Executing tasks on the backend server..."
-                sh """
-                ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${BACKEND_USER}@${BACKEND_SERVER} << 'EOF'
-                set -e
+                echo '>>> Executing tasks on the backend server...'
+                sh '''
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@10.0.3.92 << EOF
+                    set -e  # Exit immediately if a command fails
+                    echo '>>> Activating virtual environment...'
+                    source /Django_Chatapp/venv/bin/activate
 
-                echo ">>> Activating virtual environment..."
-                source ${CHATAPP_DIR}/venv/bin/activate
+                    echo '>>> Navigating to the application directory...'
+                    cd /Django_Chatapp/fundoo
 
-                echo ">>> Navigating to the application directory..."
-                cd ${FUND_APP_DIR}
+                    echo '>>> Installing dependencies from requirements.txt...'
+                    pip install -r /Django_Chatapp/requirements.txt
 
-                echo ">>> Installing dependencies from requirements.txt..."
-                pip install -r ${CHATAPP_DIR}/requirements.txt
+                    echo '>>> Running database migrations...'
+                    python manage.py migrate
 
-                echo ">>> Running database migrations..."
-                python manage.py migrate
+                    echo '>>> Restarting the application service...'
+                    sudo systemctl restart django-chatapp
 
-                echo ">>> Restarting the application service..."
-                sudo systemctl restart django-backend
-
-                echo ">>> Deployment tasks completed!"
-                EOF
-                """
+                    echo '>>> Deployment tasks completed successfully!'
+                    EOF
+                '''
             }
         }
     }
     post {
-        always {
-            echo '>>> Deployment process finished!'
-        }
         success {
-            echo 'Deployment completed successfully.'
+            echo '>>> Deployment process finished successfully!'
         }
         failure {
-            echo 'Deployment failed.'
+            echo 'Deployment failed. Please check the logs for more details.'
         }
     }
 }
