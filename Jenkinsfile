@@ -15,7 +15,6 @@ pipeline {
                 checkout scm
             }
         }
-    }
 
         stage('Sync Files') {
             steps {
