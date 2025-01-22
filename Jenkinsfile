@@ -3,7 +3,8 @@ pipeline {
     environment {
         BACKEND_USER = 'ubuntu'
         BACKEND_SERVER = '10.0.3.92'
-        CHATAPP_DIR = '/Django_Chatapp/fundoo' // Updated to include the 'fundoo' subdirectory
+        CHATAPP_DIR = '/Django_Chatapp' // This should be the root where 'venv' is located.
+        FUND_APP_DIR = '/Django_Chatapp/fundoo' // Directory where 'manage.py' is located.
         SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa'
     }
     stages {
@@ -24,10 +25,10 @@ pipeline {
                 source ${CHATAPP_DIR}/venv/bin/activate
 
                 echo ">>> Navigating to the application directory..."
-                cd ${CHATAPP_DIR}
+                cd ${FUND_APP_DIR}
 
                 echo ">>> Installing dependencies from requirements.txt..."
-                pip install -r requirements.txt
+                pip install -r ${CHATAPP_DIR}/requirements.txt
 
                 echo ">>> Running database migrations..."
                 python manage.py migrate
