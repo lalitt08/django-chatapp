@@ -1,11 +1,10 @@
 pipeline {
-    agent any // This specifies that the pipeline can run on any available agent
+    agent any
     environment {
-        // Define the environment variables
         BACKEND_USER = 'ubuntu'
         BACKEND_SERVER = '10.0.3.92'
-        CHATAPP_DIR = '/Django_Chatapp'
-        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa' // Ensure this is the correct path to your SSH private key
+        CHATAPP_DIR = '/Django_Chatapp/fundoo' // Updated to include the 'fundoo' subdirectory
+        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa'
     }
     stages {
         stage('Sync Files') {
@@ -17,10 +16,9 @@ pipeline {
         stage('Execute Remote Tasks') {
             steps {
                 echo ">>> Executing tasks on the backend server..."
-                // Using a script step to execute multiple commands via SSH
                 sh """
                 ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${BACKEND_USER}@${BACKEND_SERVER} << 'EOF'
-                set -e  # Ensure the shell exits immediately if any command exits with a non-zero status
+                set -e
 
                 echo ">>> Activating virtual environment..."
                 source ${CHATAPP_DIR}/venv/bin/activate
