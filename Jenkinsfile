@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo '>>> Executing tasks on the backend server...'
                 sh """
-                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} 'bash -s' << 'EOF'
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
                     set -e
                     echo '>>> Activating virtual environment...'
                     source ${REMOTE_APP_DIR}/venv/bin/activate
