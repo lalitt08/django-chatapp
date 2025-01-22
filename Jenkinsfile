@@ -1,8 +1,13 @@
 pipeline {
     agent any
+
     environment {
-        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa' // Specify the SSH private key
+        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa'
+        REMOTE_USER = 'ubuntu'
+        REMOTE_HOST = '10.0.3.92'
+        REMOTE_APP_DIR = '/Django_Chatapp'
     }
+
     stages {
         stage('Declarative: Checkout SCM') {
             steps {
@@ -10,45 +15,51 @@ pipeline {
                 checkout scm
             }
         }
+
         stage('Sync Files') {
             steps {
                 echo '>>> Starting file synchronization...'
-                sh '''
+                sh """
                     rsync -avz -e "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" \
-                    ${WORKSPACE}/ ubuntu@10.0.3.92:/Django_Chatapp
-                '''
+                    ${WORKSPACE}/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
+                """
             }
         }
+
         stage('Execute Remote Tasks') {
             steps {
                 echo '>>> Executing tasks on the backend server...'
-                sh '''
-                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ubuntu@10.0.3.92 << EOF
-                    set -e  # Exit immediately if a command fails
+                sh """
+                    ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} <<EOF
+                    set -e
                     echo '>>> Activating virtual environment...'
-                    source /Django_Chatapp/venv/bin/activate
+                    source ${REMOTE_APP_DIR}/venv/bin/activate
 
                     echo '>>> Navigating to the application directory...'
-                    cd /Django_Chatapp/fundoo
+                    cd ${REMOTE_APP_DIR}/fundoo
 
                     echo '>>> Installing dependencies from requirements.txt...'
-                    pip install -r /Django_Chatapp/requirements.txt
+                    pip install -r ${REMOTE_APP_DIR}/requirements.txt
 
                     echo '>>> Running database migrations...'
                     python manage.py migrate
 
                     echo '>>> Restarting the application service...'
-                    sudo systemctl restart django-backend
+                    sudo systemctl restart django-chatapp
 
                     echo '>>> Deployment tasks completed successfully!'
                     EOF
-                '''
+                """
             }
         }
     }
+
     post {
+        always {
+            echo '>>> Deployment process finished!'
+        }
         success {
-            echo '>>> Deployment process finished successfully!'
+            echo 'Deployment completed successfully!'
         }
         failure {
             echo 'Deployment failed. Please check the logs for more details.'
