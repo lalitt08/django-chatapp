@@ -7,7 +7,7 @@ pipeline {
         CHATAPP_DIR = '/Django_Chatapp'
         APP_USER = 'ubuntu'
         SERVICE_NAME = 'django-backend'
-        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa' // Direct path to the SSH key
+        SSH_KEY = '/var/lib/jenkins/.ssh/id_rsa' // Ensure this path is correct
     }
 
     stages {
@@ -34,7 +34,7 @@ pipeline {
                     set -e
 
                     echo ">>> Activating virtual environment..."
-                    source /home/${APP_USER}/venv/bin/activate
+                    source ${CHATAPP_DIR}/venv/bin/activate
 
                     echo ">>> Navigating to the application directory..."
                     cd ${CHATAPP_DIR}
