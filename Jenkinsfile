@@ -45,7 +45,7 @@ pipeline {
                     python manage.py migrate
 
                     echo '>>> Restarting the application service...'
-                    sudo systemctl restart django-chatapp
+                    sudo systemctl restart django-backend
 
                     echo '>>> Deployment tasks completed successfully!'
                     EOF
