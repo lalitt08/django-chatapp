@@ -30,7 +30,7 @@ pipeline {
             steps {
                 echo '>>> Executing tasks on the backend server...'
                 sh """
-                    ssh -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_HOST} 
+                    ssh -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
                     set -e
                     echo '>>> Sourcing environment variables from .bash_profile...'
                     source ~/.bashrc
