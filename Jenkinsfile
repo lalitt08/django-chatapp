@@ -20,7 +20,9 @@ pipeline {
             steps {
                 echo '>>> Starting file synchronization...'
                 sh """
-                    rsync -avz ${WORKSPACE}/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
+                    rsync -avz -e "ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no" \
+                    ${WORKSPACE}/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
+
                 """
             }
         }
