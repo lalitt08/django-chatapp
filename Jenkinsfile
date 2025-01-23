@@ -34,7 +34,7 @@ pipeline {
                     ssh -i ${SSH_KEY} -o StrictHostKeyChecking=no ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
                     set -e
                     echo '>>> Sourcing environment variables from .bash_profile...'
-                    source /home/${REMOTE_USER}/.bash_profile
+                    source ~/.bash_profile
                     
                     echo '>>> Activating virtual environment...'
                     source ${REMOTE_APP_DIR}/venv/bin/activate
