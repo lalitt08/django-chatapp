@@ -48,7 +48,6 @@ pipeline {
                     sudo systemctl restart django-backend
 
                     echo '>>> Deployment tasks completed successfully!'
-                    EOF
                 """
             }
         }
