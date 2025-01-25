@@ -6,7 +6,7 @@ pipeline {
         REMOTE_USER = 'ubuntu'
         REMOTE_HOST = '10.0.3.92'
         REMOTE_APP_DIR = '/Django_Chatapp'
-        SONAR_SCANNER_HOME = tool name: 'SonarQube' // Use the name configured in Global Tool Configuration
+        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Use the name configured in Global Tool Configuration
     }
 
     stages {
@@ -36,7 +36,7 @@ pipeline {
                         -Dsonar.projectKey=chatapp-jenkins \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
-                        -Dsonar.login=${sonar-token}
+                        -Dsonar.login=sqp_0bdde7e8aef2d0da84f1c0c19533d3634b418ff9
                     """
                 }
             }
