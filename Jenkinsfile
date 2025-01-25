@@ -27,15 +27,6 @@ pipeline {
             }
         }
 
-        stage('Sync Files') {
-            steps {
-                echo '>>> Starting file synchronization...'
-                sh """
-                    rsync -avz \$(pwd)/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
-                """
-            }
-        }
-
         stage('SonarQube Analysis') {
             steps {
                 echo '>>> Running SonarQube analysis...'
