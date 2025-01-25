@@ -6,6 +6,7 @@ pipeline {
         REMOTE_USER = 'ubuntu'
         REMOTE_HOST = '10.0.3.92'
         REMOTE_APP_DIR = '/Django_Chatapp'
+        SONAR_SCANNER_HOME = tool name: 'SonarQube' // Use the name configured in Global Tool Configuration
     }
 
     stages {
@@ -23,6 +24,42 @@ pipeline {
                     rsync -avz \$(pwd)/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
 
                 """
+            }
+        }
+
+        stage('Sync Files') {
+            steps {
+                echo '>>> Starting file synchronization...'
+                sh """
+                    rsync -avz \$(pwd)/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
+                """
+            }
+        }
+
+        stage('SonarQube Analysis') {
+            steps {
+                echo '>>> Running SonarQube analysis...'
+                withSonarQubeEnv('SonarQube') { // Use the name configured in SonarQube Servers
+                    sh """
+                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                        -Dsonar.projectKey=chatapp-jenkins \
+                        -Dsonar.sources=. \
+                        -Dsonar.host.url=http://18.220.1.164:9000 \
+                        -Dsonar.login=${sonar-token}
+                    """
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                echo '>>> Checking SonarQube Quality Gate...'
+                script {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
+                        error "Pipeline aborted due to SonarQube quality gate failure: ${qualityGate.status}"
+                    }
+                }
             }
         }
 
