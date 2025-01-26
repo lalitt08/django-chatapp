@@ -6,7 +6,7 @@ pipeline {
         REMOTE_USER = 'ubuntu'
         REMOTE_HOST = '10.0.3.92'
         REMOTE_APP_DIR = '/Django_Chatapp'
-        SONAR_SCANNER_HOME = tool name: 'SonarScanner' // Use the name configured in Global Tool Configuration
+        SONAR_SCANNER_HOME = tool 'SonarScanner' // Use the name configured in Global Tool Configuration
     }
 
     stages {
