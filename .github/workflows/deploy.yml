@@ -1,0 +1,55 @@
+name: Django App Deployment
+
+on:
+  push:
+    branches:
+      - main  # Trigger the workflow when changes are pushed to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    env:
+      REMOTE_USER: ubuntu
+      REMOTE_HOST: 10.0.3.92
+      REMOTE_APP_DIR: /Django_Chatapp
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Sync files to the remote server
+      - name: Sync files to remote server
+        run: |
+          rsync -avz $(pwd)/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_APP_DIR}}
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      # Step 3: Execute remote tasks
+      - name: Execute remote tasks
+        run: |
+          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }} << 'EOF'
+          set -e
+          echo '>>> Sourcing environment variables from .bash_profile...'
+          source ~/.bashrc
+
+          echo '>>> Activating virtual environment...'
+          source ${{ env.REMOTE_APP_DIR }}/venv/bin/activate
+
+          echo '>>> Navigating to the application directory...'
+          cd ${{ env.REMOTE_APP_DIR }}/fundoo
+
+          echo '>>> Installing dependencies from requirements.txt...'
+          pip install -r ${{ env.REMOTE_APP_DIR }}/requirements.txt
+
+          echo '>>> Running database migrations...'
+          python manage.py migrate
+
+          echo '>>> Restarting the application service...'
+          sudo systemctl restart django-backend
+
+          echo '>>> Deployment tasks completed successfully!'
+          EOF
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
