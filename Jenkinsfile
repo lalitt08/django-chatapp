@@ -34,7 +34,7 @@ pipeline {
                     sh """
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                         -Dsonar.projectKey=chatapp-jenkins \
-                        -Dsonar.sources=fundoo/fundoo,fundoo/fundooapp \
+                        -Dsonar.sources=. \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
                         -Dsonar.login=sqp_0bdde7e8aef2d0da84f1c0c19533d3634b418ff9
                     """
