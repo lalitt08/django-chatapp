@@ -9,11 +9,6 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
-    env:
-      REMOTE_USER: ubuntu
-      REMOTE_HOST: 10.0.3.92
-      REMOTE_APP_DIR: /Django_Chatapp
-
     steps:
       # Step 1: Checkout the repository
       - name: Debug SSH Connection
