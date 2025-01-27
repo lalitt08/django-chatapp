@@ -1,4 +1,4 @@
-name: Django App Deployment
+name: Debug SSH Connection
 
 on:
   push:
@@ -9,9 +9,25 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
 
+    env:
+      REMOTE_USER: ubuntu  # Replace with the correct remote user
+      REMOTE_HOST: 10.0.3.92  # Replace with the correct IP or hostname of the server
+
     steps:
-      # Step 1: Checkout the repository
+      # Step 1: Set up SSH Key
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      # Step 2: Add Remote Host to Known Hosts
+      - name: Add Remote Host to Known Hosts
+        run: |
+          ssh-keyscan -H ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
+
+      # Step 3: Debug SSH Connection
       - name: Debug SSH Connection
         run: |
           echo "Testing SSH connection..."
-          ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }} echo "SSH connected successfully"
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }} echo "SSH connected successfully"
