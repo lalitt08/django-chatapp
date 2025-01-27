@@ -22,7 +22,7 @@ jobs:
       # Step 2: Sync files to the remote server
       - name: Sync files to remote server
         run: |
-          rsync -avz $(pwd)/ ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_APP_DIR}}
+          rsync -avz ./ ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }}:${{ env.REMOTE_APP_DIR}}
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
