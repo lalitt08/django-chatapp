@@ -50,24 +50,31 @@ pipeline {
                     sudo systemctl restart django-backend
 
                     echo '>>> Backend setup and service restart completed!'
+                    EOF
                 """
             }
         }
 
         stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') { // Replace with your SonarQube server name
-                    sh """
-                        sonar-scanner \
+                echo '>>> Running SonarQube Analysis on the backend server...'
+                sh """
+                    ssh -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_HOST} << EOF
+                    set -e
+                    echo '>>> Navigating to the application directory...'
+                    cd ${REMOTE_APP_DIR}
+
+                    echo '>>> Running SonarQube analysis...'
+                    sonar-scanner \
                         -Dsonar.projectKey=chatapp \
                         -Dsonar.sources=. \
                         -Dsonar.exclusions=**/venv/**,**/__pycache__/**,**/*.pyc,**/migrations/** \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
                         -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954 \
                         -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.scm.exclusions.disabled=true \
-                    """
-                }
+                        -Dsonar.scm.exclusions.disabled=true
+                    EOF
+                """
             }
         }
 
