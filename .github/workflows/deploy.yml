@@ -35,7 +35,7 @@ jobs:
           echo "Building and deploying application on $TARGET_SERVER..."
           ssh $TARGET_SERVER << EOF
               set -e
-              
+              source ~/.bashrc
               echo "Changing to application directory: $APP_DIR..."
               cd $APP_DIR
 
@@ -49,8 +49,7 @@ jobs:
               cd $APP_SUBDIR
 
               echo "Running database migrations..."
-              python3 manage.py makemigrations
-              bash ~/run_migrate.sh
+              python manage.py migrate
 
               echo "Restarting Django service..."
               sudo systemctl restart django.service
