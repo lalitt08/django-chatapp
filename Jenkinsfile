@@ -50,7 +50,6 @@ pipeline {
                     sudo systemctl restart django-backend
 
                     echo '>>> Backend setup and service restart completed!'
-                    EOF
                 """
             }
         }
@@ -81,7 +80,6 @@ pipeline {
                         -Dsonar.scm.exclusions.disabled=true 
 
                     echo '>>> SonarQube analysis completed on the backend server.'
-                    EOF
                 """
             }
         }
