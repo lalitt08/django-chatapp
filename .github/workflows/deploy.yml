@@ -8,23 +8,23 @@ jobs:
     runs-on: [self-hosted, Linux, X64]
     
     env:
-      TARGET_SERVER: "ubuntu@10.0.3.92"  # Hardcoded SSH address of your server
-      APP_DIR: "/Django_Chatapp"            # Hardcoded app directory on the server
-      VENV_DIR: "/Django_Chatapp/venv"      # Hardcoded virtual environment directory
-      APP_SUBDIR: "fundoo"               # Hardcoded application subdirectory
+      TARGET_SERVER: "ubuntu@10.0.3.92"  
+      APP_DIR: "/Django_Chatapp"            
+      VENV_DIR: "/Django_Chatapp/venv"     
+      APP_SUBDIR: "fundoo"              
 
     steps:
-      # Step 1: Checkout repository
+      
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      # Step 2: Sync application code to backend server using rsync
+     
       - name: Sync application code to backend server
         run: |
           echo "Syncing application code to $TARGET_SERVER..."
           rsync -avz --exclude '.git' ./ $TARGET_SERVER:$APP_DIR
 
-      # Step 3: Build and deploy the application
+   
       - name: Build and deploy application
         run: |
           echo "Building and deploying application on $TARGET_SERVER..."
