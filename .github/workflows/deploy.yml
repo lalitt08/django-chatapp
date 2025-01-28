@@ -52,10 +52,10 @@ jobs:
               python manage.py migrate
 
               echo "Restarting Django service..."
-              sudo systemctl restart django.service
+              sudo systemctl restart django-backend
 
               echo "Checking service status..."
-              sudo systemctl status django.service
+              sudo systemctl status django-backend
           EOF
 
       - name: Notify success
