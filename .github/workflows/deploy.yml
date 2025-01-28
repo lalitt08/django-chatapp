@@ -1,33 +1,67 @@
-name: Debug SSH Connection
+name: Backend CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow when changes are pushed to the main branch
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
-
+    runs-on: [self-hosted, Linux, X64]
+    
     env:
-      REMOTE_USER: ubuntu  # Replace with the correct remote user
-      REMOTE_HOST: 10.0.3.92  # Replace with the correct IP or hostname of the server
+      TARGET_SERVER: "ubuntu@10.0.3.92"  # Hardcoded SSH address of your server
+      APP_DIR: "/Django_Chatapp"            # Hardcoded app directory on the server
+      VENV_DIR: "/Django_Chatapp/venv"      # Hardcoded virtual environment directory
+      APP_SUBDIR: "fundoo"               # Hardcoded application subdirectory
 
     steps:
-      # Step 1: Set up SSH Key
-      - name: Set up SSH Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
+      # Step 1: Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Step 2: Add Remote Host to Known Hosts
-      - name: Add Remote Host to Known Hosts
+      # Step 2: Sync application code to backend server using rsync
+      - name: Sync application code to backend server
         run: |
-          ssh-keyscan -H ${{ env.REMOTE_HOST }} >> ~/.ssh/known_hosts
+          echo "Syncing application code to $TARGET_SERVER..."
+          rsync -avz --exclude '.git' ./ $TARGET_SERVER:$APP_DIR
 
-      # Step 3: Debug SSH Connection
-      - name: Debug SSH Connection
+      # Step 3: Build and deploy the application
+      - name: Build and deploy application
         run: |
-          echo "Testing SSH connection..."
-          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ env.REMOTE_USER }}@${{ env.REMOTE_HOST }} echo "SSH connected successfully"
+          echo "Building and deploying application on $TARGET_SERVER..."
+          ssh $TARGET_SERVER << EOF
+              set -e
+              
+              echo "Changing to application directory: $APP_DIR..."
+              cd $APP_DIR
+
+              echo "Activating virtual environment in $VENV_DIR..."
+              source $VENV_DIR/bin/activate
+
+              echo "Installing dependencies from requirements.txt..."
+              pip install -r requirements.txt
+
+              echo "Navigating to application subdirectory: $APP_SUBDIR..."
+              cd $APP_SUBDIR
+
+              echo "Running database migrations..."
+              python3 manage.py makemigrations
+              bash ~/run_migrate.sh
+
+              echo "Restarting Django service..."
+              sudo systemctl restart django.service
+
+              echo "Checking service status..."
+              sudo systemctl status django.service
+          EOF
+
+      - name: Notify success
+        run: echo "CI/CD pipeline completed successfully!"
+
+      - name: Notify failure
+        if: failure()
+        run: echo "CI/CD pipeline failed!"
