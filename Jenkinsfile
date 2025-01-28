@@ -50,7 +50,6 @@ pipeline {
                     sudo systemctl restart django-backend
 
                     echo '>>> Backend setup and service restart completed!'
-                    EOF
                 """
             }
         }
@@ -73,7 +72,6 @@ pipeline {
                         -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954 \
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.scm.exclusions.disabled=true
-                    EOF
                 """
             }
         }
