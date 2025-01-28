@@ -56,31 +56,18 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                echo '>>> Running SonarQube analysis on the backend server...'
-                sh """
-                    ssh -i ${SSH_KEY} ${REMOTE_USER}@${REMOTE_HOST} << 'EOF'
-                    set -e
-                    echo '>>> Sourcing environment variables from .bashrc...'
-                    source ~/.bashrc
-
-                    echo '>>> Activating virtual environment...'
-                    source ${REMOTE_APP_DIR}/venv/bin/activate
-
-                    echo '>>> Navigating to the application directory...'
-                    cd ${REMOTE_APP_DIR}
-
-                    echo '>>> Running SonarScanner...'
-                    sonar-scanner \
+                withSonarQubeEnv('SonarQube') { // Replace with your SonarQube server name
+                    sh """
+                        sonar-scanner \
                         -Dsonar.projectKey=chatapp \
                         -Dsonar.sources=. \
                         -Dsonar.exclusions=**/venv/**,**/__pycache__/**,**/*.pyc,**/migrations/** \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
                         -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954 \
                         -Dsonar.sourceEncoding=UTF-8 \
-                        -Dsonar.scm.exclusions.disabled=true 
-
-                    echo '>>> SonarQube analysis completed on the backend server.'
-                """
+                        -Dsonar.scm.exclusions.disabled=true \
+                    """
+                }
             }
         }
 
