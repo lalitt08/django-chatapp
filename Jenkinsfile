@@ -33,12 +33,13 @@ pipeline {
                 withSonarQubeEnv('SonarQube') { 
                     sh """
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=chatappinteg \
+                        -Dsonar.projectKey=chatapp \
                         -Dsonar.sources=. \
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.scm.exclusions.disabled=true \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
-                        -Dsonar.login=sqp_e9f221ef064972986284e9b6bbaa4da68e806a19
+                        -Dsonar.python.coverage.reportPaths=coverage.xml \
+                        -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954
                     """
                 }
             }
