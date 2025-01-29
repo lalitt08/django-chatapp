@@ -33,19 +33,23 @@ pipeline {
                 withSonarQubeEnv('SonarQube') { 
                     sh """
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
-                        -Dsonar.projectKey=chatapp \
+                        -Dsonar.projectKey=chatapp-jenkins \
                         -Dsonar.sources=. \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
-                        -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954
+                        -Dsonar.login=sqp_0bdde7e8aef2d0da84f1c0c19533d3634b418ff9
                     """
                 }
             }
         }
 
-        stage("Quality Gate") {
+        stage('Quality Gate') {
             steps {
-                timeout(time: 1, unit: 'HOURS') {
-                    waitForQualityGate abortPipeline: true
+                echo '>>> Checking SonarQube Quality Gate...'
+                script {
+                    def qualityGate = waitForQualityGate()
+                    if (qualityGate.status != 'OK') {
+                        error "Pipeline aborted due to SonarQube quality gate failure: ${qualityGate.status}"
+                    }
                 }
             }
         }
