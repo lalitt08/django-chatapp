@@ -30,6 +30,7 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '>>> Running SonarQube analysis...'
+                bash -c 'source /var/lib/jenkins/.bashrc
                 withSonarQubeEnv('SonarQube') { 
                     sh """
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
