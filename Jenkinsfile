@@ -21,7 +21,7 @@ pipeline {
             steps {
                 echo '>>> Starting file synchronization...'
                 sh """
-                    source /var/lib/jenkins/.bashrc
+                    bash -c 'source ~/.bashrc'
                     rsync -avz \$(pwd)/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
 
                 """
