@@ -32,7 +32,7 @@ pipeline {
                 echo '>>> Running SonarQube analysis...'
                 withSonarQubeEnv('SonarQube') { 
                     sh """
-                        bash -c 'source /var/lib/jenkins/.bashrc && ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
+                        ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                         -Dsonar.projectKey=chatapp \
                         -Dsonar.sources=. \
                         -Dsonar.sourceEncoding=UTF-8 \
