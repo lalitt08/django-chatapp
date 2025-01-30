@@ -38,7 +38,6 @@ pipeline {
                         -Dsonar.sourceEncoding=UTF-8 \
                         -Dsonar.scm.exclusions.disabled=true \
                         -Dsonar.host.url=http://18.220.1.164:9000 \
-                        -Dsonar.python.coverage.reportPaths=coverage.xml \
                         -Dsonar.login=sqp_8b69d57f97cd25ef19a598d0638412eba36a5954
                     """
                 }
