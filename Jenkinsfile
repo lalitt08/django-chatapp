@@ -21,6 +21,7 @@ pipeline {
             steps {
                 echo '>>> Starting file synchronization...'
                 sh """
+                    source ~/.bashrc
                     rsync -avz \$(pwd)/ ${REMOTE_USER}@${REMOTE_HOST}:${REMOTE_APP_DIR}
 
                 """
@@ -30,7 +31,6 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 echo '>>> Running SonarQube analysis...'
-                bash -c 'source /var/lib/jenkins/.bashrc
                 withSonarQubeEnv('SonarQube') { 
                     sh """
                         ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
