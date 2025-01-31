@@ -2,26 +2,47 @@ version: 0.2
 
 phases:
   install:
-    runtime-versions:
-      python: 3.8
     commands:
-      - echo "Installing system dependencies..."
-      - apt-get update && apt-get install -y libpq-dev python3-dev
-      - echo "Installing Python dependencies..."
+      - echo "Updating package lists and installing dependencies..."
+      - apt-get update -y
+      - apt-get install -y git python3-venv python3-pip zip  # Added 'zip' to package installation
+
+      - echo "Cloning the repository..."
+      - git clone https://github.com/lalitt08/django-chatapp.git  # Replace with your repository URL
+
+      - cd django-chatapp  # Replace with your repository directory name
+
+      - echo "Creating virtual environment..."
+      - python3 -m venv venv
+
+      - echo "Activating virtual environment..."
+      - . venv/bin/activate  # Using '.' instead of 'source' for compatibility
+
+      - echo "Installing requirements..."
       - pip install -r requirements.txt
 
   build:
     commands:
-      - echo "Setting working directory..."
-      - ls -la  # List files to debug directory structure
-      - cd /codebuild/output/src3046202403/src  # Adjust this path to match your project structure
-      - ls -la  # List files to confirm the presence of manage.py
       - echo "Running migrations..."
       - python manage.py migrate
+
       - echo "Collecting static files..."
       - python manage.py collectstatic --noinput
 
+      - echo "Build phase completed."
+
+  post_build:
+    commands:
+      - echo "Packaging application into a ZIP file..."
+      - cd ..
+      - echo "Listing contents before zipping..."
+      - ls -la django-chatapp  # Verify the directory exists and its contents
+
+      - echo "Creating ZIP file..."
+      - zip -r chatapp-build.zip django-chatapp  # Replace with your repository directory name
+
 artifacts:
   files:
-    - '**/*'
+    - appspec.yml
+    - chatapp-build.zip
   discard-paths: no
