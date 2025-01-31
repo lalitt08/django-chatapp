@@ -1,0 +1,21 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      python: 3.8
+    commands:
+      - echo "Installing dependencies..."
+      - pip install -r requirements.txt
+
+  build:
+    commands:
+      - echo "Running migrations..."
+      - python manage.py migrate
+      - echo "Collecting static files..."
+      - python manage.py collectstatic --noinput
+
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no
