@@ -19,7 +19,7 @@ phases:
       - echo "Activating virtual environment..."
       - . venv/bin/activate
 
-      - echo "Installing requirements..."
+      - echo "Upgrading pip and installing requirements..."
       - pip install --upgrade pip
       - pip install -r requirements.txt
 
@@ -31,10 +31,9 @@ phases:
     commands:
       - echo "Packaging application into a ZIP file..."
       - cd ..
-      - zip -r chatapp-build.zip django-chatapp
-
       - echo "Listing contents before zipping..."
-      - ls -la django-chatapp  # Verify contents before zipping  # Replace with your repository directory name
+      - ls -la django-chatapp  # Verify contents before zipping
+      - zip -r chatapp-build.zip django-chatapp  # Ensure this is the correct relative path
 
 artifacts:
   files:
