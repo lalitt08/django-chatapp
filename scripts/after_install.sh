@@ -10,7 +10,7 @@ source /Django_Chatapp/venv/bin/activate
 # Install Python dependencies
 echo "Installing dependencies..."
 pip install -r requirements.txt
-
+source ~/.bashrc
 # Run database migrations
 echo "Running migrations..."
 python manage.py migrate
