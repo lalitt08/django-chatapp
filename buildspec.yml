@@ -13,7 +13,9 @@ phases:
   build:
     commands:
       - echo "Setting working directory..."
-      - cd /codebuild/output/src3869147683/src/fundoo  # Adjust this path to match your project structure
+      - ls -la  # List files to debug directory structure
+      - cd /codebuild/output/src3176600683/src  # Adjust this path to match your project structure
+      - ls -la  # List files to confirm the presence of manage.py
       - echo "Running migrations..."
       - python manage.py migrate
       - echo "Collecting static files..."
