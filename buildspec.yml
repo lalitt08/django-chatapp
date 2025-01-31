@@ -5,13 +5,16 @@ phases:
     runtime-versions:
       python: 3.8
     commands:
-      - echo "Installing dependencies..."
+      - echo "Installing system dependencies..."
+      - apt-get update && apt-get install -y libpq-dev python3-dev
+      - echo "Installing Python dependencies..."
       - pip install -r requirements.txt
 
   build:
     commands:
+      - echo "Setting working directory..."
+      - cd /codebuild/output/src3869147683/src/fundoo  # Adjust this path to match your project structure
       - echo "Running migrations..."
-      - cd fundoo
       - python manage.py migrate
       - echo "Collecting static files..."
       - python manage.py collectstatic --noinput
