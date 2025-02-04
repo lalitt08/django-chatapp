@@ -9,8 +9,10 @@ files:
 hooks:
   BeforeInstall:
     - location: scripts/Env_requirements.sh
+      timeout: 300
       runas: ubuntu
 
   ApplicationStart:
     - location: scripts/Restart_Migration.sh
+      timeout: 300
       runas: ubuntu
