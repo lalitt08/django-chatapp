@@ -8,10 +8,6 @@ files:
     
 hooks:
   BeforeInstall:
-    - location: scripts/unzip_files.sh
-      runas: ubuntu
-
-  AfterInstall:
     - location: scripts/Env_requirements.sh
       runas: ubuntu
 
