@@ -21,5 +21,6 @@ phases:
 artifacts:
   files:
     - appspec.yml
+    - scripts/*
     - Django_Chatapp.zip
   discard-paths: no
