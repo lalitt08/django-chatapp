@@ -4,7 +4,7 @@ os: linux
 files:
   - source: /
     destination: /Django_Chatapp
-    overwrite: true
+    file_exists_behavior: OVERWRITE
     
 hooks:
   BeforeInstall:
